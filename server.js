@@ -49,20 +49,20 @@ function registerRoutes(Result) {
   // GET all results (public)
   app.get('/api/results', async (req, res) => {
     try {
+      // Single IST base — avoids mismatch on UTC servers like Render
+      const istNow = new Date(Date.now() + 330 * 60000); // UTC + 5:30
+
       const getISTDate = (offsetDays = 0) => {
-        const d = new Date();
-        d.setMinutes(d.getMinutes() + 330);
-        d.setDate(d.getDate() + offsetDays);
+        const d = new Date(istNow.getTime());
+        d.setUTCDate(d.getUTCDate() + offsetDays);
         return d.toISOString().split('T')[0];
       };
 
       const todayStr = getISTDate(0);
       const yesterdayStr = getISTDate(-1);
 
-      // Current time in IST (minutes from midnight)
-      const now = new Date();
-      const istTime = new Date(now.getTime() + (330 * 60000));
-      const currentMinutes = istTime.getUTCHours() * 60 + istTime.getUTCMinutes();
+      // Current IST minutes from midnight (same base as dates above)
+      const currentMinutes = istNow.getUTCHours() * 60 + istNow.getUTCMinutes();
 
       // Helper to convert 'hh:mm A' to minutes from midnight
       const timeToMinutes = (timeStr) => {
