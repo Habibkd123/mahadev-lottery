@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="hi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mahadev Lottery</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
   <style>
     body {
       margin: 0;
@@ -15,8 +17,11 @@
 
     .hero {
       position: relative;
-      min-height: 440px;
-      background: url('https://mahadevlottery.co.in/images/mahadev.jpg') center/cover no-repeat;
+      min-height: 540px;
+      background-image: url('/ram.jpeg');
+      background-position: center 25%;
+      background-size: cover;
+      background-repeat: no-repeat;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -253,23 +258,48 @@
       .hero {
         min-height: 360px;
       }
+
       .table-panel table {
         min-width: 650px;
       }
     }
 
     @media (max-width: 768px) {
-      .hero-line { height: 48px; }
-      .hero-box { margin-top: -26px; padding: 18px 16px; }
-      .pot-wrap { width: 150px; height: 150px; }
-      .pot-value { font-size: 3.1rem; }
+      .hero-line {
+        height: 48px;
+      }
+
+      .hero-box {
+        margin-top: -26px;
+        padding: 18px 16px;
+      }
+
+      .pot-wrap {
+        width: 150px;
+        height: 150px;
+      }
+
+      .pot-value {
+        font-size: 3.1rem;
+      }
+
       .table-panel th,
-      .table-panel td { padding: 10px 8px; }
-      .chart-actions { flex-direction: column; gap: 12px; }
-      .chart-wrap { padding: 8px; }
+      .table-panel td {
+        padding: 10px 8px;
+      }
+
+      .chart-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .chart-wrap {
+        padding: 8px;
+      }
     }
   </style>
 </head>
+
 <body>
   <section class="hero">
     <div class="hero-top"><span class="online-badge">online : 9208</span></div>
@@ -279,7 +309,9 @@
   <main class="page-shell">
     <section class="hero-box">
       <div class="label">MAHADEV LOTTERY</div>
-      <div class="pot-wrap"><div class="pot-value" id="liveResult">14</div></div>
+      <div class="pot-wrap">
+        <div class="pot-value" id="liveResult">14</div>
+      </div>
       <div class="live-pill" id="liveTime">09:00 PM</div>
     </section>
 
@@ -301,14 +333,16 @@
     </section>
 
     <div class="chart-actions">
-      <select id="yearSelect"><option>2026</option></select>
+      <select id="yearSelect">
+        <option>2026</option>
+      </select>
       <button id="chartGo">Go</button>
     </div>
 
     <div class="chart-title">MAHADEV LOTTERY CHART</div>
     <div class="chart-wrap" id="chartWrap"></div>
 
-  <div class="footer-card">36 Jodi</div>
+    <div class="footer-card">36 Jodi</div>
   </main>
 
   <script>
@@ -361,13 +395,13 @@
     ];
 
     const chartRows = [
-      ['01-05-2026','96','78','86','34','97','96','72','91','70','38','96','10','30','84','62','76','06','99','03','32','78','70','01','26','88','18','76','62','35','04','21','63'],
-      ['02-05-2026','67','18','72','98','57','50','30','34','90','18','08','06','90','96','40','38','32','88','15','25','10','02','40','76','76','52','09','70','12','63','77','80'],
-      ['03-05-2026','52','38','89','13','17','06','03','41','10','83','11','88','63','42','93','64','89','82','08','50','41','43','62','60','37','03','88','37','56','86','83'],
-      ['04-05-2026','59','80','87','40','01','09','49','79','58','38','68','27','01','85','01','34','58','34','47','64','23','47','39','49','53','73','98','63','61','54','78','71'],
-      ['05-05-2026','29','01','48','81','75','27','74','78','11','21','05','01','63','09','13','07','10','87','15','71','34','06','97','60','99','03','66','89','44','84','75','70'],
-      ['06-05-2026','63','53','47','11','81','34','34','68','09','08','80','43','17','59','45','22','92','36','38','15','03','10','64','19','45','27','00','29','69','71','52','74'],
-      ['07-05-2026','53','15','84','23','96','57','96','02','19','38','25','11','81','00','49','97','64','87','85','69','85','66','70','90','08','02','85','67','50','91','96','60']
+      ['01-05-2026', '96', '78', '86', '34', '97', '96', '72', '91', '70', '38', '96', '10', '30', '84', '62', '76', '06', '99', '03', '32', '78', '70', '01', '26', '88', '18', '76', '62', '35', '04', '21', '63'],
+      ['02-05-2026', '67', '18', '72', '98', '57', '50', '30', '34', '90', '18', '08', '06', '90', '96', '40', '38', '32', '88', '15', '25', '10', '02', '40', '76', '76', '52', '09', '70', '12', '63', '77', '80'],
+      ['03-05-2026', '52', '38', '89', '13', '17', '06', '03', '41', '10', '83', '11', '88', '63', '42', '93', '64', '89', '82', '08', '50', '41', '43', '62', '60', '37', '03', '88', '37', '56', '86', '83'],
+      ['04-05-2026', '59', '80', '87', '40', '01', '09', '49', '79', '58', '38', '68', '27', '01', '85', '01', '34', '58', '34', '47', '64', '23', '47', '39', '49', '53', '73', '98', '63', '61', '54', '78', '71'],
+      ['05-05-2026', '29', '01', '48', '81', '75', '27', '74', '78', '11', '21', '05', '01', '63', '09', '13', '07', '10', '87', '15', '71', '34', '06', '97', '60', '99', '03', '66', '89', '44', '84', '75', '70'],
+      ['06-05-2026', '63', '53', '47', '11', '81', '34', '34', '68', '09', '08', '80', '43', '17', '59', '45', '22', '92', '36', '38', '15', '03', '10', '64', '19', '45', '27', '00', '29', '69', '71', '52', '74'],
+      ['07-05-2026', '53', '15', '84', '23', '96', '57', '96', '02', '19', '38', '25', '11', '81', '00', '49', '97', '64', '87', '85', '69', '85', '66', '70', '90', '08', '02', '85', '67', '50', '91', '96', '60']
     ];
 
     async function renderResults() {
@@ -375,7 +409,7 @@
         const response = await fetch('/api/results');
         if (!response.ok) throw new Error('API not available');
         const dbRows = await response.json();
-        
+
         // Merge dbRows with mockRows based on time
         const mergedRows = mockRows.map(mock => {
           const dbRow = dbRows.find(r => r.time === mock.time);
@@ -419,7 +453,7 @@
         // Update latest result in hero-box (Pot)
         // Find the last row that has a result (not wait..)
         const latestRow = [...mergedRows].reverse().find(r => r.new && r.new.toLowerCase() !== 'wait..');
-        
+
         // If there's a latest result, show it. Otherwise show the first slot.
         const displayRow = latestRow || mergedRows[0];
         if (displayRow) {
@@ -429,7 +463,7 @@
 
       } catch (error) {
         console.error('Failed to fetch results:', error);
-        
+
         // Fallback to mockRows if API fails
         const body = mockRows.map(r => `
           <tr>
@@ -446,7 +480,7 @@
 
     function renderChart() {
       const chartWrap = document.getElementById('chartWrap');
-      const headers = ['DATE', '01 AM','01:30 AM','02 AM','02:30 AM','03 AM','03:30 AM','04 AM','04:30 AM','05 AM','05:30 AM','06 AM','06:30 AM','07 AM','07:30 AM','08 AM','08:30 AM','09 AM','09:30 AM','10 AM','10:30 AM','11 AM','11:30 AM','12 PM','12:30 PM','01 PM','01:30 PM','02 PM','02:30 PM','03 PM','03:30 PM','04 PM','04:30 PM'];
+      const headers = ['DATE', '01 AM', '01:30 AM', '02 AM', '02:30 AM', '03 AM', '03:30 AM', '04 AM', '04:30 AM', '05 AM', '05:30 AM', '06 AM', '06:30 AM', '07 AM', '07:30 AM', '08 AM', '08:30 AM', '09 AM', '09:30 AM', '10 AM', '10:30 AM', '11 AM', '11:30 AM', '12 PM', '12:30 PM', '01 PM', '01:30 PM', '02 PM', '02:30 PM', '03 PM', '03:30 PM', '04 PM', '04:30 PM'];
       let html = '<table class="chart-table"><thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
       chartRows.forEach(row => {
         html += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
@@ -456,11 +490,12 @@
     }
 
     document.getElementById('chartGo').addEventListener('click', renderChart);
-    
+
     // Call renderResults and then fetch fresh data periodically
     renderResults();
     setInterval(renderResults, 30000); // refresh every 30 seconds
     renderChart();
   </script>
 </body>
+
 </html>
