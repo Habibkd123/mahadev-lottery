@@ -59,6 +59,26 @@ function registerRoutes(Result) {
       const todayStr = getISTDate(0);
       const yesterdayStr = getISTDate(-1);
 
+      // Current time in IST (minutes from midnight)
+      const now = new Date();
+      const istTime = new Date(now.getTime() + (330 * 60000));
+      const currentMinutes = istTime.getUTCHours() * 60 + istTime.getUTCMinutes();
+
+      // Helper to convert 'hh:mm A' to minutes from midnight
+      const timeToMinutes = (timeStr) => {
+        const match = (timeStr || '').trim().match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!match) return -1;
+        let hours = parseInt(match[1], 10);
+        const minutes = parseInt(match[2], 10);
+        const ampm = match[3].toUpperCase();
+        if (hours === 12) {
+          hours = ampm === 'AM' ? 0 : 12;
+        } else if (ampm === 'PM') {
+          hours += 12;
+        }
+        return hours * 60 + minutes;
+      };
+
       const dbRows = await Result.find({ date: { $in: [todayStr, yesterdayStr] } }).sort({ sno: 1 });
       const resultMap = {};
 
@@ -70,7 +90,13 @@ function registerRoutes(Result) {
           resultMap[row.time].oldResult = row.newResult && row.newResult.toLowerCase() !== 'wait..' ? row.newResult : '---';
         }
         if (row.date === todayStr) {
-          resultMap[row.time].newResult = row.newResult;
+          const rowMinutes = timeToMinutes(row.time);
+          // Only show if current time has passed the scheduled time
+          if (rowMinutes === -1 || currentMinutes >= rowMinutes) {
+            resultMap[row.time].newResult = row.newResult;
+          } else {
+            resultMap[row.time].newResult = 'wait..';
+          }
         }
       });
 
