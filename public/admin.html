@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Mahadev Lottery</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #e9effd;
+      color: #0b2a7a;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-shell {
+      /* max-width: 1180px; */
+      margin: 0 auto;
+      padding: 22px 18px 36px;
+    }
+
+    .hero-line {
+      height: 56px;
+      background: #0b2a7f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+      margin-bottom: 20px;
+    }
+
+    .card-panel {
+      background: #fff;
+      border: 2px solid #0c2f98;
+      border-radius: 16px;
+      box-shadow: 0 24px 40px rgba(11, 42, 122, 0.14);
+      padding: 24px;
+    }
+
+    .brand {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 10px 18px;
+      background: #0c2f98;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .login-panel,
+    .management-panel {
+      padding: 24px 24px 20px;
+    }
+
+    .login-panel {
+      max-width: 100%;
+      margin: 0 auto 28px;
+    }
+
+    .form-control {
+      border: 1px solid #0c2f98;
+      background: #f9fbff;
+      color: #0b2a7a;
+      border-radius: 12px;
+      box-shadow: none;
+      padding: 12px 14px;
+    }
+
+    /* background: #f9fbff;
+      color: #0b2a7a;
+      border-radius: 12px;
+      box-shadow: none;
+    } */
+    .form-control:focus {
+      border-color: #0b2a7f;
+      box-shadow: 0 0 0 0.15rem rgba(11, 42, 122, 0.15);
+    }
+
+    .btn {
+      border-radius: 12px;
+      font-weight: 700;
+      padding: 10px 18px;
+    }
+
+    .btn-primary {
+      background: #0c2f98;
+      border-color: #0c2f98;
+    }
+
+    .btn-outline-secondary {
+      color: #0c2f98;
+      border-color: #0c2f98;
+    }
+
+    .btn-outline-secondary:hover {
+      background: rgba(12, 47, 152, 0.08);
+    }
+
+    .table-responsive {
+      margin-top: 18px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .input-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .input-grid .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .notes {
+      font-size: 0.92rem;
+      color: #5f709a;
+      margin-top: 6px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .table-shell {
+      background: #0b2a7f;
+      border-radius: 16px;
+      padding: 16px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .table-shell table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+      min-width: 650px;
+    }
+
+    .table-shell th,
+    .table-shell td {
+      padding: 14px 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.95rem;
+    }
+
+    .table-shell th {
+      background: #0c2f98;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .table-shell tbody tr:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-shell tbody tr td button {
+      min-width: 80px;
+    }
+
+    .footer-note {
+      color: #5f6c8f;
+      font-size: 0.95rem;
+      margin-top: 16px;
+    }
+
+    .edit-row input {
+      min-width: 110px;
+    }
+
+    .section-grid {
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+
+    .table-panel {
+      background: #0b2a7f;
+      border-radius: 16px;
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+    }
+
+    th,
+    td {
+      padding: 14px 10px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: #0c2f98;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .text-white-50 {
+      color: #5f709a !important;
+    }
+
+    @media (max-width: 991px) {
+      .section-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero-line">MAHADEV LOTTERY ADMIN</div>
+  <div class="page-shell">
+    <!-- <div class="card-panel mb-4 admin-header">
+      <div>
+        <div class="brand">Admin Panel</div>
+        <p>Password-protected panel for editing live lottery rows from one easy screen.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <span class="badge bg-primary text-white">Responsive</span>
+        <span class="badge bg-info text-white">Easy edit</span>
+      </div>
+    </div> -->
+
+    <div id="loginContainer" class="card-panel login-panel">
+      <h2 class="h4 mb-3">Admin Login</h2>
+      <div class="mb-4">
+        <label class="form-label">Admin Password</label>
+        <input id="passwordInput" type="password" class="form-control" placeholder="Enter admin password"
+          autocomplete="current-password">
+      </div>
+      <button id="loginButton" class="btn btn-primary w-100" onclick="login()">Login</button>
+      <p class="footer-note">Note: Change the password in the server environment using <code>ADMIN_PASSWORD</code>.</p>
+    </div>
+
+    <div id="managementContainer" class="card-panel" style="display:none;">
+      <div class="row g-4">
+        <!-- Left Side: Inputs -->
+        <div class="col-lg-4">
+          <h3 class="h5 mb-3">Add new result</h3>
+
+          <input id="inputSno" type="hidden" value="">
+          <input id="inputGame" type="hidden" value="MAHADEV LOTTERY">
+          <input id="inputOld" type="hidden" value="---">
+
+          <div class="row g-2 mb-3">
+            <div class="col-sm-6 form-group">
+              <label class="form-label" for="inputTime">Time</label>
+              <input id="inputTime" class="form-control" type="time" placeholder="Select time">
+            </div>
+            <div class="col-sm-6 form-group">
+              <label class="form-label" for="inputDate">Date</label>
+              <input id="inputDate" class="form-control" type="date" value="">
+            </div>
+          </div>
+
+          <div class="form-group mb-4">
+            <label class="form-label" for="inputNew">New Result</label>
+            <input id="inputNew" class="form-control" type="text" placeholder="wait..">
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <button class="btn btn-success w-100" onclick="saveNewResult()">Save row</button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-outline-secondary w-100" onclick="resetAddForm()">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Table -->
+        <div class="col-lg-8">
+          <div class="table-shell mt-0">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h3 class="h5 mb-0 text-white">Live row editor</h3>
+                <p class="mb-0 text-white-50">Tap edit to change any row from the table.</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Date</th>
+                    <th>New</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminTable">
+                  <tr>
+                    <td colspan="4">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginContainer = document.getElementById('loginContainer');
+    const managementContainer = document.getElementById('managementContainer');
+    const passwordInput = document.getElementById('passwordInput');
+    const inputDate = document.getElementById('inputDate');
+    const inputTime = document.getElementById('inputTime');
+    const adminTable = document.getElementById('adminTable');
+
+    let adminPassword = '';
+    let resultsCache = [];
+
+    inputDate.value = new Date().toISOString().slice(0, 10);
+
+    // Auto-assign S.No based on time selection
+    inputTime.addEventListener('change', (e) => {
+      const val = e.target.value; // e.g. "13:30"
+      if (!val) return;
+      const [hStr, mStr] = val.split(':');
+      const h = parseInt(hStr, 10);
+      const m = parseInt(mStr, 10);
+
+      if (h >= 1 && h <= 23) {
+        const sno = (h - 1) * 2 + 1 + (m >= 30 ? 1 : 0);
+        document.getElementById('inputSno').value = sno;
+      }
+    });
+
+    const showAlert = (message, type = 'warning') => {
+      const existing = document.querySelector('.toast-alert');
+      if (existing) existing.remove();
+      const alert = document.createElement('div');
+      alert.className = `toast-alert position-fixed bottom-0 end-0 m-3 alert alert-${type} shadow-lg`;
+      alert.textContent = message;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 3200);
+    };
+
+    function formatTimeForStorage(value) {
+      if (!value) return '';
+      const [hours, minutes] = value.split(':').map(Number);
+      if (Number.isNaN(hours) || Number.isNaN(minutes)) return value;
+      const suffix = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = ((hours + 11) % 12) + 1;
+      return `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${suffix}`;
+    }
+
+    function parseTimeForInput(value) {
+      if (!value) return '';
+      const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (!match) return '';
+      let hours = Number(match[1]);
+      const minutes = match[2];
+      const suffix = match[3] ? match[3].toUpperCase() : null;
+      if (suffix) {
+        if (suffix === 'PM' && hours < 12) hours += 12;
+        if (suffix === 'AM' && hours === 12) hours = 0;
+      }
+      return `${hours.toString().padStart(2, '0')}:${minutes}`;
+    }
+
+    // Auto-login on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const savedPass = localStorage.getItem('mahadev_admin_pass');
+      if (savedPass) {
+        passwordInput.value = savedPass;
+        await login(savedPass);
+      }
+    });
+
+    async function login(autoPass) {
+      const password = autoPass || passwordInput.value.trim();
+      if (!password) {
+        showAlert('Password required', 'danger');
+        return;
+      }
+      try {
+        const response = await fetch('/api/admin/results', {
+          method: 'GET',
+          headers: { 'X-Admin-Password': password }
+        });
+
+        if (!response.ok) {
+          if (!autoPass) showAlert('Invalid password', 'danger');
+          localStorage.removeItem('mahadev_admin_pass');
+          return;
+        }
+
+        adminPassword = password;
+        localStorage.setItem('mahadev_admin_pass', password);
+        loginContainer.style.display = 'none';
+        managementContainer.style.display = 'block';
+        await loadAdminData();
+      } catch (error) {
+        showAlert('Unable to connect to server', 'danger');
+        console.error(error);
+      }
+    }
+
+    async function authorizedFetch(url, options = {}) {
+      options.headers = options.headers || {};
+      options.headers['X-Admin-Password'] = adminPassword;
+      if (options.body && !(options.body instanceof FormData)) {
+        options.headers['Content-Type'] = 'application/json';
+      }
+      const response = await fetch(url, options);
+      if (response.status === 401) {
+        showAlert('Session expired. Login again.', 'danger');
+        logout();
+        throw new Error('Unauthorized');
+      }
+      return response;
+    }
+
+    async function loadAdminData() {
+      try {
+        const response = await authorizedFetch('/api/admin/results');
+        const data = await response.json();
+        resultsCache = Array.isArray(data) ? data : [];
+        renderAdminTable();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    function renderAdminTable() {
+      if (!resultsCache.length) {
+        adminTable.innerHTML = '<tr><td colspan="7">No rows yet. Add a new result to get started.</td></tr>';
+        return;
+      }
+      adminTable.innerHTML = resultsCache.map(item => `
+        <tr data-id="${item._id}">
+          <td>${escapeHtml(item.time)}</td>
+          <td>${escapeHtml(item.date)}</td>
+          <td class="text-warning fw-bold">${escapeHtml(item.newResult)}</td>
+          <td class="d-flex justify-content-center gap-1 flex-wrap">
+            <button class="btn btn-sm btn-outline-info" onclick="startEdit('${item._id}')">Edit</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteResult('${item._id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function startEdit(id) {
+      const row = document.querySelector(`tr[data-id="${id}"]`);
+      if (!row) return;
+
+      const item = resultsCache.find(entry => entry._id === id);
+      if (!item) return;
+
+      row.classList.add('edit-row');
+      row.innerHTML = `
+        <td><input class="form-control form-control-sm" type="time" value="${parseTimeForInput(item.time)}"></td>
+        <td><input class="form-control form-control-sm" type="date" value="${escapeHtml(item.date)}"></td>
+        <td><input class="form-control form-control-sm text-warning fw-bold" type="text" value="${escapeHtml(item.newResult)}"></td>
+        <td class="d-flex justify-content-center gap-1 flex-wrap">
+          <button class="btn btn-sm btn-success" onclick="saveEdit('${id}')">Save</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="loadAdminData()">Cancel</button>
+        </td>
+      `;
+    }
+
+    async function saveEdit(id) {
+      const row = document.querySelector(`tr[data-id="${id}"]`);
+      if (!row) return;
+
+      const inputs = row.querySelectorAll('input');
+      const [timeEl, dateEl, newEl] = inputs;
+      const timeValue = timeEl.value.trim();
+      const payload = {
+        time: formatTimeForStorage(timeValue),
+        date: dateEl.value || new Date().toISOString().slice(0, 10),
+        newResult: newEl.value.trim() || 'wait..'
+      };
+
+      if (!timeValue) {
+        showAlert('Time cannot be empty', 'danger');
+        return;
+      }
+
+      try {
+        const response = await authorizedFetch(`/api/admin/results/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          showAlert(result.error || 'Unable to save', 'danger');
+          return;
+        }
+        showAlert('Row updated', 'success');
+        await loadAdminData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function deleteResult(id) {
+      if (!confirm('Are you sure you want to delete this row?')) {
+        return;
+      }
+      try {
+        const response = await authorizedFetch(`/api/admin/results/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (!response.ok) {
+          showAlert(result.error || 'Unable to delete', 'danger');
+          return;
+        }
+        showAlert('Row deleted', 'success');
+        await loadAdminData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function saveNewResult() {
+      const sno = Number(document.getElementById('inputSno').value);
+      const game = document.getElementById('inputGame').value.trim() || 'MAHADEV LOTTERY';
+      const timeValue = document.getElementById('inputTime').value;
+      const time = formatTimeForStorage(timeValue);
+      const date = document.getElementById('inputDate').value;
+      const oldResult = document.getElementById('inputOld').value.trim() || '---';
+      const newResult = document.getElementById('inputNew').value.trim() || 'wait..';
+
+      if (!timeValue) {
+        showAlert('Please select a time', 'danger');
+        return;
+      }
+
+      try {
+        const response = await authorizedFetch('/api/admin/results', {
+          method: 'POST',
+          body: JSON.stringify({ sno, game, time, date, oldResult, newResult })
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          showAlert(result.error || 'Unable to save row', 'danger');
+          return;
+        }
+        showAlert('Row saved', 'success');
+        resetAddForm();
+        await loadAdminData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    function resetAddForm() {
+      document.getElementById('inputNew').value = '';
+      inputDate.value = new Date().toISOString().slice(0, 10);
+    }
+
+    function logout() {
+      adminPassword = '';
+      localStorage.removeItem('mahadev_admin_pass');
+      resultsCache = [];
+      managementContainer.style.display = 'none';
+      loginContainer.style.display = 'block';
+      passwordInput.value = '';
+      adminTable.innerHTML = '<tr><td colspan="4">Login again to manage rows.</td></tr>';
+    }
+  </script>
+</body>
+
+</html>

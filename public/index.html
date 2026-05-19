@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahadev Lottery</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6fb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #0b2a7a;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 440px;
+      background: url('https://mahadevlottery.co.in/images/mahadev.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.07) 100%);
+    }
+
+    .hero-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: flex-end;
+      padding: 14px 18px;
+    }
+
+    .online-badge {
+      color: #fff;
+      font-size: 0.92rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      padding: 8px 16px;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-line {
+      position: relative;
+      z-index: 1;
+      height: 54px;
+      background: #0b2a7f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .hero-line span {
+      color: #fff;
+      font-size: 1rem;
+      letter-spacing: 0.22em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .page-shell {
+      /* max-width: 1180px; */
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    .hero-box {
+      /* background: #fff;
+      border-radius: 16px; */
+      padding: 26px 24px 20px;
+      margin-top: -40px;
+      /* box-shadow: 0 24px 52px rgba(0, 0, 0, 0.16); */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-box .label {
+      background: #0c2f98;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .pot-wrap {
+      width: 176px;
+      height: 176px;
+      background: url('/pot-removebg-preview.png') center/contain no-repeat;
+      background-size: contain;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .pot-value {
+      font-size: 3.7rem;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 3px 16px rgba(0, 0, 0, 0.34);
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0c2f98;
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      min-width: 124px;
+      text-transform: uppercase;
+    }
+
+    .table-panel {
+      background: #0b2a7f;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 24px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+    }
+
+    .table-panel table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    .table-panel th,
+    .table-panel td {
+      padding: 14px 10px;
+      text-align: center;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.95rem;
+    }
+
+    .table-panel th {
+      background: #0c2f98;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .table-panel tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .table-panel tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .chart-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 26px 0 14px;
+    }
+
+    .chart-actions select,
+    .chart-actions button {
+      border-radius: 10px;
+      border: none;
+      font-size: 0.98rem;
+      padding: 10px 16px;
+    }
+
+    .chart-actions select {
+      min-width: 118px;
+      border: 1px solid #0c2f98;
+      background: #fff;
+      color: #0b2a7a;
+    }
+
+    .chart-actions button {
+      background: #0c2f98;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .chart-title {
+      background: #0c2f98;
+      color: #fff;
+      padding: 10px 0;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .chart-wrap {
+      background: #0b2a7f;
+      border-radius: 5px;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .chart-table {
+      width: max-content;
+      border-collapse: collapse;
+      font-size: 10.2px;
+      letter-spacing: 0.02em;
+    }
+
+    .chart-table th,
+    .chart-table td {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 8px;
+      color: #fff;
+      text-align: center;
+      min-width: 36px;
+    }
+
+    .chart-table th {
+      background: #0c2f98;
+      font-weight: 700;
+    }
+
+    .chart-table tbody tr:nth-child(odd) td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .footer-card {
+      max-width: 1180px;
+      margin: 26px auto 36px;
+      border: 2px solid #0c2f98;
+      border-radius: 12px;
+      background: #fff;
+      color: #0b2a7a;
+      text-align: center;
+      font-size: 1.55rem;
+      font-weight: 700;
+      padding: 16px 10px;
+    }
+
+    @media (max-width: 992px) {
+      .hero {
+        min-height: 360px;
+      }
+      .table-panel table {
+        min-width: 650px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-line { height: 48px; }
+      .hero-box { margin-top: -26px; padding: 18px 16px; }
+      .pot-wrap { width: 150px; height: 150px; }
+      .pot-value { font-size: 3.1rem; }
+      .table-panel th,
+      .table-panel td { padding: 10px 8px; }
+      .chart-actions { flex-direction: column; gap: 12px; }
+      .chart-wrap { padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-top"><span class="online-badge">online : 9208</span></div>
+    <div class="hero-line"><span>LOTTERY</span></div>
+  </section>
+
+  <main class="page-shell">
+    <section class="hero-box">
+      <div class="label">MAHADEV LOTTERY</div>
+      <div class="pot-wrap"><div class="pot-value" id="liveResult">14</div></div>
+      <div class="live-pill" id="liveTime">09:00 PM</div>
+    </section>
+
+    <section class="table-panel">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>S.no</th>
+              <th>Game</th>
+              <th>Time</th>
+              <th>Old</th>
+              <th>New</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="chart-actions">
+      <select id="yearSelect"><option>2026</option></select>
+      <button id="chartGo">Go</button>
+    </div>
+
+    <div class="chart-title">MAHADEV LOTTERY CHART</div>
+    <div class="chart-wrap" id="chartWrap"></div>
+
+  <div class="footer-card">36 Jodi</div>
+  </main>
+
+  <script>
+    const mockRows = [
+      { sno: 1, time: '01:00 AM', old: '12', new: '67' },
+      { sno: 2, time: '01:30 AM', old: '56', new: '24' },
+      { sno: 3, time: '02:00 AM', old: '71', new: '70' },
+      { sno: 4, time: '02:30 AM', old: '05', new: '93' },
+      { sno: 5, time: '03:00 AM', old: '88', new: '90' },
+      { sno: 6, time: '03:30 AM', old: '95', new: '02' },
+      { sno: 7, time: '04:00 AM', old: '64', new: '57' },
+      { sno: 8, time: '04:30 AM', old: '23', new: '61' },
+      { sno: 9, time: '05:00 AM', old: '84', new: '32' },
+      { sno: 10, time: '05:30 AM', old: '97', new: '58' },
+      { sno: 11, time: '06:00 AM', old: '65', new: '11' },
+      { sno: 12, time: '06:30 AM', old: '84', new: '53' },
+      { sno: 13, time: '07:00 AM', old: '83', new: '62' },
+      { sno: 14, time: '07:30 AM', old: '84', new: '93' },
+      { sno: 15, time: '08:00 AM', old: '11', new: '19' },
+      { sno: 16, time: '08:30 AM', old: '84', new: '76' },
+      { sno: 17, time: '09:00 AM', old: '29', new: '86' },
+      { sno: 18, time: '09:30 AM', old: '92', new: '91' },
+      { sno: 19, time: '10:00 AM', old: '84', new: '67' },
+      { sno: 20, time: '10:30 AM', old: '09', new: '48' },
+      { sno: 21, time: '11:00 AM', old: '87', new: '28' },
+      { sno: 22, time: '11:30 AM', old: '61', new: '72' },
+      { sno: 23, time: '12:00 PM', old: '08', new: '34' },
+      { sno: 24, time: '12:30 PM', old: '36', new: '21' },
+      { sno: 25, time: '01:00 PM', old: '64', new: '72' },
+      { sno: 26, time: '01:30 PM', old: '35', new: '22' },
+      { sno: 27, time: '02:00 PM', old: '13', new: '35' },
+      { sno: 28, time: '02:30 PM', old: '37', new: '20' },
+      { sno: 29, time: '03:00 PM', old: '40', new: '91' },
+      { sno: 30, time: '03:30 PM', old: '51', new: '39' },
+      { sno: 31, time: '04:00 PM', old: '47', new: '55' },
+      { sno: 32, time: '04:30 PM', old: '89', new: '20' },
+      { sno: 33, time: '05:00 PM', old: '28', new: '09' },
+      { sno: 34, time: '05:30 PM', old: '81', new: '05' },
+      { sno: 35, time: '06:00 PM', old: '74', new: '08' },
+      { sno: 36, time: '06:30 PM', old: '35', new: '22' },
+      { sno: 37, time: '07:00 PM', old: '49', new: '35' },
+      { sno: 38, time: '07:30 PM', old: '59', new: '22' },
+      { sno: 39, time: '08:00 PM', old: '44', new: '18' },
+      { sno: 40, time: '08:30 PM', old: '76', new: '54' },
+      { sno: 41, time: '09:00 PM', old: '96', new: '14' },
+      { sno: 42, time: '09:30 PM', old: '16', new: 'wait..' },
+      { sno: 43, time: '10:00 PM', old: '32', new: 'wait..' },
+      { sno: 44, time: '10:30 PM', old: '23', new: 'wait..' },
+      { sno: 45, time: '11:00 PM', old: '37', new: 'wait..' }
+    ];
+
+    const chartRows = [
+      ['01-05-2026','96','78','86','34','97','96','72','91','70','38','96','10','30','84','62','76','06','99','03','32','78','70','01','26','88','18','76','62','35','04','21','63'],
+      ['02-05-2026','67','18','72','98','57','50','30','34','90','18','08','06','90','96','40','38','32','88','15','25','10','02','40','76','76','52','09','70','12','63','77','80'],
+      ['03-05-2026','52','38','89','13','17','06','03','41','10','83','11','88','63','42','93','64','89','82','08','50','41','43','62','60','37','03','88','37','56','86','83'],
+      ['04-05-2026','59','80','87','40','01','09','49','79','58','38','68','27','01','85','01','34','58','34','47','64','23','47','39','49','53','73','98','63','61','54','78','71'],
+      ['05-05-2026','29','01','48','81','75','27','74','78','11','21','05','01','63','09','13','07','10','87','15','71','34','06','97','60','99','03','66','89','44','84','75','70'],
+      ['06-05-2026','63','53','47','11','81','34','34','68','09','08','80','43','17','59','45','22','92','36','38','15','03','10','64','19','45','27','00','29','69','71','52','74'],
+      ['07-05-2026','53','15','84','23','96','57','96','02','19','38','25','11','81','00','49','97','64','87','85','69','85','66','70','90','08','02','85','67','50','91','96','60']
+    ];
+
+    async function renderResults() {
+      try {
+        const response = await fetch('/api/results');
+        if (!response.ok) throw new Error('API not available');
+        const dbRows = await response.json();
+        
+        // Merge dbRows with mockRows based on time
+        const mergedRows = mockRows.map(mock => {
+          const dbRow = dbRows.find(r => r.time === mock.time);
+          if (dbRow) {
+            return {
+              sno: dbRow.sno || mock.sno,
+              time: mock.time,
+              old: dbRow.oldResult || '---',
+              new: dbRow.newResult || 'wait..'
+            };
+          }
+          return mock;
+        });
+
+        // Add any dbRows that were not in mockRows
+        dbRows.forEach(dbRow => {
+          if (!mergedRows.find(m => m.time === dbRow.time)) {
+            mergedRows.push({
+              sno: dbRow.sno,
+              time: dbRow.time,
+              old: dbRow.oldResult || '---',
+              new: dbRow.newResult || 'wait..'
+            });
+          }
+        });
+
+        // Sort by sno
+        mergedRows.sort((a, b) => a.sno - b.sno);
+
+        const body = mergedRows.map(r => `
+          <tr>
+            <td>${r.sno}</td>
+            <td>MAHADEV LOTTERY</td>
+            <td>${r.time}</td>
+            <td>${r.old}</td>
+            <td style="${r.new.toLowerCase() !== 'wait..' ? 'color: #ffeb3b; font-weight: bold;' : ''}">${r.new}</td>
+          </tr>
+        `).join('');
+        document.getElementById('resultsBody').innerHTML = body;
+
+        // Update latest result in hero-box (Pot)
+        // Find the last row that has a result (not wait..)
+        const latestRow = [...mergedRows].reverse().find(r => r.new && r.new.toLowerCase() !== 'wait..');
+        
+        // If there's a latest result, show it. Otherwise show the first slot.
+        const displayRow = latestRow || mergedRows[0];
+        if (displayRow) {
+          document.getElementById('liveResult').textContent = displayRow.new || 'wait..';
+          document.getElementById('liveTime').textContent = displayRow.time || '';
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch results:', error);
+        
+        // Fallback to mockRows if API fails
+        const body = mockRows.map(r => `
+          <tr>
+            <td>${r.sno}</td>
+            <td>MAHADEV LOTTERY</td>
+            <td>${r.time}</td>
+            <td>${r.old}</td>
+            <td>${r.new}</td>
+          </tr>
+        `).join('');
+        document.getElementById('resultsBody').innerHTML = body;
+      }
+    }
+
+    function renderChart() {
+      const chartWrap = document.getElementById('chartWrap');
+      const headers = ['DATE', '01 AM','01:30 AM','02 AM','02:30 AM','03 AM','03:30 AM','04 AM','04:30 AM','05 AM','05:30 AM','06 AM','06:30 AM','07 AM','07:30 AM','08 AM','08:30 AM','09 AM','09:30 AM','10 AM','10:30 AM','11 AM','11:30 AM','12 PM','12:30 PM','01 PM','01:30 PM','02 PM','02:30 PM','03 PM','03:30 PM','04 PM','04:30 PM'];
+      let html = '<table class="chart-table"><thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+      chartRows.forEach(row => {
+        html += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
+      });
+      html += '</tbody></table>';
+      chartWrap.innerHTML = html;
+    }
+
+    document.getElementById('chartGo').addEventListener('click', renderChart);
+    
+    // Call renderResults and then fetch fresh data periodically
+    renderResults();
+    setInterval(renderResults, 30000); // refresh every 30 seconds
+    renderChart();
+  </script>
+</body>
+</html>
