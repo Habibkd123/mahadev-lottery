@@ -360,6 +360,36 @@
         .replace(/>/g, '&gt;');
     }
 
+    function timeToMinutes(timeStr) {
+      const match = (timeStr || '').trim().match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      if (!match) return -1;
+      let hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      const ampm = match[3].toUpperCase();
+      if (hours === 12) {
+        hours = ampm === 'AM' ? 0 : 12;
+      } else if (ampm === 'PM') {
+        hours += 12;
+      }
+      return hours * 60 + minutes;
+    }
+
+    /** Pot: latest declared result by clock time (not S.NO). */
+    function getLatestResultByTime(rows) {
+      let best = null;
+      let bestMinutes = -1;
+      for (const row of rows) {
+        if (!row.new || row.new.toLowerCase() === 'wait..') continue;
+        const mins = timeToMinutes(row.time);
+        if (mins < 0) continue;
+        if (!best || mins > bestMinutes || (mins === bestMinutes && row.sno > best.sno)) {
+          bestMinutes = mins;
+          best = row;
+        }
+      }
+      return best;
+    }
+
     function updateLiveClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -408,11 +438,9 @@
           </tr>
         `).join('');
 
-        const latestRow = [...rows].reverse().find(r => r.new && r.new.toLowerCase() !== 'wait..');
-        const displayRow = latestRow || rows[rows.length - 1];
-        if (displayRow) {
-          document.getElementById('liveResult').textContent = displayRow.new || 'wait..';
-        }
+        const latestRow = getLatestResultByTime(rows);
+        document.getElementById('liveResult').textContent =
+          latestRow ? (latestRow.new || 'wait..') : 'wait..';
       } catch (error) {
         console.error('Failed to fetch results:', error);
         tbody.innerHTML = '<tr><td colspan="5">Unable to load results</td></tr>';
