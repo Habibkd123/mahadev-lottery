@@ -236,6 +236,144 @@
         flex-direction: column;
       }
     }
+
+    /* Column time picker (hotel-style) */
+    .time-picker {
+      position: relative;
+      width: 100%;
+    }
+
+    .time-picker-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      background: #fff;
+      color: #212529;
+      font-size: 1rem;
+      line-height: 1.2;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .time-picker-trigger:hover {
+      border-color: #86b7fe;
+    }
+
+    .time-picker-trigger:focus {
+      outline: none;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+    }
+
+    .time-picker-display {
+      flex: 1;
+      color: #212529;
+    }
+
+    .time-picker-display.is-placeholder {
+      color: #6c757d;
+    }
+
+    .time-picker-icons {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #6c757d;
+      flex-shrink: 0;
+    }
+
+    .time-picker-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 2000;
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .time-picker.is-open .time-picker-panel {
+      display: block;
+    }
+
+    .time-picker-columns {
+      display: flex;
+    }
+
+    .time-picker-list {
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+      width: 58px;
+      max-height: 220px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border-right: 1px solid #e9ecef;
+      scrollbar-width: thin;
+    }
+
+    .time-picker-list:last-child {
+      border-right: none;
+      width: 54px;
+    }
+
+    .time-picker-item {
+      padding: 9px 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 15px;
+      color: #212529;
+      user-select: none;
+      line-height: 1.2;
+    }
+
+    .time-picker-item:hover {
+      background: #e7f1ff;
+    }
+
+    .time-picker-item.is-active {
+      background: #0d6efd;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .time-picker-item.is-focused {
+      box-shadow: inset 0 0 0 2px #212529;
+    }
+
+    .time-picker--compact .time-picker-trigger {
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      border-radius: 8px;
+    }
+
+    .time-picker--compact .time-picker-list {
+      max-height: 180px;
+      width: 50px;
+    }
+
+    .time-picker--compact .time-picker-item {
+      padding: 7px 6px;
+      font-size: 13px;
+    }
+
+    .table-shell:has(.time-picker.is-open) {
+      overflow: visible;
+    }
+
+    .table-shell .edit-row td {
+      overflow: visible;
+      position: relative;
+      vertical-align: top;
+    }
   </style>
 </head>
 
@@ -275,11 +413,11 @@
           <input id="inputOld" type="hidden" value="---">
 
           <div class="row g-2 mb-3">
-            <div class="col-sm-6 form-group">
-              <label class="form-label" for="inputTime">Time</label>
-              <input id="inputTime" class="form-control" type="time" placeholder="Select time">
+            <div class="col-sm-7 form-group">
+              <label class="form-label">Time</label>
+              <div id="addTimePicker" class="time-picker"></div>
             </div>
-            <div class="col-sm-6 form-group">
+            <div class="col-sm-5 form-group">
               <label class="form-label" for="inputDate">Date</label>
               <input id="inputDate" class="form-control" type="date" value="">
             </div>
@@ -337,27 +475,175 @@
     const managementContainer = document.getElementById('managementContainer');
     const passwordInput = document.getElementById('passwordInput');
     const inputDate = document.getElementById('inputDate');
-    const inputTime = document.getElementById('inputTime');
     const adminTable = document.getElementById('adminTable');
 
     let adminPassword = '';
     let resultsCache = [];
+    let addTimePicker = null;
 
     inputDate.value = new Date().toISOString().slice(0, 10);
 
-    // Auto-assign S.No based on time selection
-    inputTime.addEventListener('change', (e) => {
-      const val = e.target.value; // e.g. "13:30"
-      if (!val) return;
-      const [hStr, mStr] = val.split(':');
-      const h = parseInt(hStr, 10);
-      const m = parseInt(mStr, 10);
+    function closeAllTimePickers(exceptRoot) {
+      document.querySelectorAll('.time-picker.is-open').forEach(el => {
+        if (el !== exceptRoot) el.classList.remove('is-open');
+      });
+    }
 
-      if (h >= 1 && h <= 23) {
-        const sno = (h - 1) * 2 + 1 + (m >= 30 ? 1 : 0);
-        document.getElementById('inputSno').value = sno;
+    function initColumnTimePicker(root, { compact = false, onChange } = {}) {
+      if (root._columnTimePicker) return root._columnTimePicker;
+
+      if (compact) root.classList.add('time-picker--compact');
+
+      root.innerHTML = `
+        <button type="button" class="time-picker-trigger" aria-haspopup="listbox" aria-expanded="false">
+          <span class="time-picker-display is-placeholder" data-role="display">Select time</span>
+          <span class="time-picker-icons" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7v5l3 2"></path>
+            </svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 10l5 5 5-5z"></path>
+            </svg>
+          </span>
+        </button>
+        <div class="time-picker-panel" role="dialog" aria-label="Select time">
+          <div class="time-picker-columns">
+            <ul class="time-picker-list" data-unit="hour" aria-label="Hour"></ul>
+            <ul class="time-picker-list" data-unit="minute" aria-label="Minute"></ul>
+            <ul class="time-picker-list" data-unit="ampm" aria-label="AM or PM"></ul>
+          </div>
+        </div>
+      `;
+
+      const trigger = root.querySelector('.time-picker-trigger');
+      const display = root.querySelector('[data-role="display"]');
+      const panel = root.querySelector('.time-picker-panel');
+      const lists = {
+        hour: root.querySelector('[data-unit="hour"]'),
+        minute: root.querySelector('[data-unit="minute"]'),
+        ampm: root.querySelector('[data-unit="ampm"]')
+      };
+
+      const state = { hour: '', minute: '', ampm: 'AM' };
+
+      function scrollActiveIntoView(unit) {
+        const active = lists[unit].querySelector('.time-picker-item.is-active');
+        if (active) active.scrollIntoView({ block: 'nearest' });
+      }
+
+      function renderActiveStates() {
+        ['hour', 'minute', 'ampm'].forEach(unit => {
+          lists[unit].querySelectorAll('.time-picker-item').forEach(li => {
+            const isActive = li.dataset.value === state[unit];
+            li.classList.toggle('is-active', isActive);
+            li.classList.remove('is-focused');
+          });
+        });
+      }
+
+      function updateDisplay() {
+        if (!state.hour || state.minute === '') {
+          display.textContent = 'Select time';
+          display.classList.add('is-placeholder');
+          return;
+        }
+        display.textContent = `${state.hour}:${state.minute} ${state.ampm}`;
+        display.classList.remove('is-placeholder');
+      }
+
+      function selectValue(unit, value) {
+        state[unit] = value;
+        renderActiveStates();
+        scrollActiveIntoView(unit);
+        updateDisplay();
+        if (onChange) onChange({ ...state });
+      }
+
+      function buildList(unit, values) {
+        lists[unit].innerHTML = values.map(v => {
+          return `<li class="time-picker-item" data-unit="${unit}" data-value="${v}" role="option">${v}</li>`;
+        }).join('');
+      }
+
+      const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+      const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+      buildList('hour', hours);
+      buildList('minute', minutes);
+      buildList('ampm', ['AM', 'PM']);
+
+      root.addEventListener('click', (e) => {
+        const item = e.target.closest('.time-picker-item');
+        if (item) {
+          selectValue(item.dataset.unit, item.dataset.value);
+          return;
+        }
+        if (e.target.closest('.time-picker-trigger')) {
+          const willOpen = !root.classList.contains('is-open');
+          closeAllTimePickers(root);
+          root.classList.toggle('is-open', willOpen);
+          trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+          if (willOpen) {
+            ['hour', 'minute', 'ampm'].forEach(scrollActiveIntoView);
+          }
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!root.contains(e.target)) {
+          root.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      const api = {
+        getValue: () => ({ ...state }),
+        setValue({ hour = '', minute = '', ampm = 'AM' } = {}) {
+          state.hour = hour;
+          state.minute = minute;
+          state.ampm = ampm || 'AM';
+          renderActiveStates();
+          updateDisplay();
+          ['hour', 'minute', 'ampm'].forEach(scrollActiveIntoView);
+        },
+        clear() {
+          api.setValue({ hour: '', minute: '', ampm: 'AM' });
+        }
+      };
+
+      root._columnTimePicker = api;
+      updateDisplay();
+      return api;
+    }
+
+    addTimePicker = initColumnTimePicker(document.getElementById('addTimePicker'), {
+      onChange: (v) => {
+        if (v.hour && v.minute !== '') assignSnoFrom12h(v.hour, v.minute, v.ampm);
       }
     });
+
+    function minutesFrom12h(hour, minute, ampm) {
+      if (!hour || minute === '') return -1;
+      let h = parseInt(hour, 10);
+      const m = parseInt(minute, 10);
+      if (Number.isNaN(h) || Number.isNaN(m) || h < 1 || h > 12) return -1;
+      const period = (ampm || 'AM').toUpperCase();
+      if (period === 'PM' && h < 12) h += 12;
+      if (period === 'AM' && h === 12) h = 0;
+      return h * 60 + m;
+    }
+
+    function assignSnoFrom12h(hour, minute, ampm) {
+      const totalMinutes = minutesFrom12h(hour, minute, ampm);
+      if (totalMinutes < 0) return;
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      if (h >= 1 && h <= 23) {
+        document.getElementById('inputSno').value = (h - 1) * 2 + 1 + (m >= 30 ? 1 : 0);
+      } else if (h === 0) {
+        document.getElementById('inputSno').value = m >= 30 ? 2 : 1;
+      }
+    }
 
     const showAlert = (message, type = 'warning') => {
       const existing = document.querySelector('.toast-alert');
@@ -369,27 +655,26 @@
       setTimeout(() => alert.remove(), 3200);
     };
 
-    function formatTimeForStorage(value) {
-      if (!value) return '';
-      const [hours, minutes] = value.split(':').map(Number);
-      if (Number.isNaN(hours) || Number.isNaN(minutes)) return value;
-      const suffix = hours >= 12 ? 'PM' : 'AM';
-      const hour12 = ((hours + 11) % 12) + 1;
-      return `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${suffix}`;
+    function formatTimeForStorage(hour, minute, ampm) {
+      if (!hour || minute === '') return '';
+      const h = parseInt(hour, 10);
+      if (Number.isNaN(h) || h < 1 || h > 12) return '';
+      const suffix = (ampm || 'AM').toUpperCase() === 'PM' ? 'PM' : 'AM';
+      return `${h.toString().padStart(2, '0')}:${String(minute).padStart(2, '0')} ${suffix}`;
     }
 
-    function parseTimeForInput(value) {
-      if (!value) return '';
+    function parseTimeForStorage(value) {
+      const empty = { hour: '', minute: '', ampm: 'AM' };
+      if (!value) return empty;
       const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
-      if (!match) return '';
-      let hours = Number(match[1]);
-      const minutes = match[2];
-      const suffix = match[3] ? match[3].toUpperCase() : null;
-      if (suffix) {
-        if (suffix === 'PM' && hours < 12) hours += 12;
-        if (suffix === 'AM' && hours === 12) hours = 0;
-      }
-      return `${hours.toString().padStart(2, '0')}:${minutes}`;
+      if (!match) return empty;
+      const hourNum = Number(match[1]);
+      if (hourNum < 1 || hourNum > 12) return empty;
+      return {
+        hour: hourNum.toString().padStart(2, '0'),
+        minute: match[2],
+        ampm: match[3] ? match[3].toUpperCase() : 'AM'
+      };
     }
 
     // Auto-login on page load
@@ -486,8 +771,11 @@
       if (!item) return;
 
       row.classList.add('edit-row');
+      const parsed = parseTimeForStorage(item.time);
       row.innerHTML = `
-        <td><input class="form-control form-control-sm" type="time" value="${parseTimeForInput(item.time)}"></td>
+        <td>
+          <div class="edit-time-picker time-picker time-picker--compact"></div>
+        </td>
         <td><input class="form-control form-control-sm" type="date" value="${escapeHtml(item.date)}"></td>
         <td><input class="form-control form-control-sm text-warning fw-bold" type="text" value="${escapeHtml(item.newResult)}"></td>
         <td class="d-flex justify-content-center gap-1 flex-wrap">
@@ -495,23 +783,29 @@
           <button class="btn btn-sm btn-outline-secondary" onclick="loadAdminData()">Cancel</button>
         </td>
       `;
+
+      const editPickerEl = row.querySelector('.edit-time-picker');
+      const editPicker = initColumnTimePicker(editPickerEl, { compact: true });
+      editPicker.setValue(parsed);
     }
 
     async function saveEdit(id) {
       const row = document.querySelector(`tr[data-id="${id}"]`);
       if (!row) return;
 
-      const inputs = row.querySelectorAll('input');
-      const [timeEl, dateEl, newEl] = inputs;
-      const timeValue = timeEl.value.trim();
+      const pickerEl = row.querySelector('.edit-time-picker');
+      const picker = pickerEl && pickerEl._columnTimePicker;
+      const { hour = '', minute = '', ampm = 'AM' } = picker ? picker.getValue() : {};
+      const dateEl = row.querySelector('input[type="date"]');
+      const newEl = row.querySelector('input[type="text"]');
       const payload = {
-        time: formatTimeForStorage(timeValue),
+        time: formatTimeForStorage(hour, minute, ampm),
         date: dateEl.value || new Date().toISOString().slice(0, 10),
         newResult: newEl.value.trim() || 'wait..'
       };
 
-      if (!timeValue) {
-        showAlert('Time cannot be empty', 'danger');
+      if (!payload.time) {
+        showAlert('Please select hour, minute and AM/PM', 'danger');
         return;
       }
 
@@ -553,14 +847,14 @@
     async function saveNewResult() {
       const sno = Number(document.getElementById('inputSno').value);
       const game = document.getElementById('inputGame').value.trim() || 'MAHADEV LOTTERY';
-      const timeValue = document.getElementById('inputTime').value;
-      const time = formatTimeForStorage(timeValue);
+      const { hour, minute, ampm } = addTimePicker.getValue();
+      const time = formatTimeForStorage(hour, minute, ampm);
       const date = document.getElementById('inputDate').value;
       const oldResult = document.getElementById('inputOld').value.trim() || '---';
       const newResult = document.getElementById('inputNew').value.trim() || 'wait..';
 
-      if (!timeValue) {
-        showAlert('Please select a time', 'danger');
+      if (!time) {
+        showAlert('Please select hour, minute and AM/PM', 'danger');
         return;
       }
 
@@ -584,7 +878,9 @@
 
     function resetAddForm() {
       document.getElementById('inputNew').value = '';
+      addTimePicker.clear();
       inputDate.value = new Date().toISOString().slice(0, 10);
+      document.getElementById('inputSno').value = '';
     }
 
     function logout() {

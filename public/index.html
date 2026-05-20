@@ -310,9 +310,9 @@
     <section class="hero-box">
       <div class="label">MAHADEV LOTTERY</div>
       <div class="pot-wrap">
-        <div class="pot-value" id="liveResult">14</div>
+        <div class="pot-value" id="liveResult">wait..</div>
       </div>
-      <div class="live-pill" id="liveTime">09:00 PM</div>
+      <div class="live-pill" id="liveTime"></div>
     </section>
 
     <section class="table-panel">
@@ -333,9 +333,7 @@
     </section>
 
     <div class="chart-actions">
-      <select id="yearSelect">
-        <option>2026</option>
-      </select>
+      <select id="yearSelect"></select>
       <button id="chartGo">Go</button>
     </div>
 
@@ -346,155 +344,122 @@
   </main>
 
   <script>
-    const mockRows = [
-      { sno: 1, time: '01:00 AM', old: '12', new: '67' },
-      { sno: 2, time: '01:30 AM', old: '56', new: '24' },
-      { sno: 3, time: '02:00 AM', old: '71', new: '70' },
-      { sno: 4, time: '02:30 AM', old: '05', new: '93' },
-      { sno: 5, time: '03:00 AM', old: '88', new: '90' },
-      { sno: 6, time: '03:30 AM', old: '95', new: '02' },
-      { sno: 7, time: '04:00 AM', old: '64', new: '57' },
-      { sno: 8, time: '04:30 AM', old: '23', new: '61' },
-      { sno: 9, time: '05:00 AM', old: '84', new: '32' },
-      { sno: 10, time: '05:30 AM', old: '97', new: '58' },
-      { sno: 11, time: '06:00 AM', old: '65', new: '11' },
-      { sno: 12, time: '06:30 AM', old: '84', new: '53' },
-      { sno: 13, time: '07:00 AM', old: '83', new: '62' },
-      { sno: 14, time: '07:30 AM', old: '84', new: '93' },
-      { sno: 15, time: '08:00 AM', old: '11', new: '19' },
-      { sno: 16, time: '08:30 AM', old: '84', new: '76' },
-      { sno: 17, time: '09:00 AM', old: '29', new: '86' },
-      { sno: 18, time: '09:30 AM', old: '92', new: '91' },
-      { sno: 19, time: '10:00 AM', old: '84', new: '67' },
-      { sno: 20, time: '10:30 AM', old: '09', new: '48' },
-      { sno: 21, time: '11:00 AM', old: '87', new: '28' },
-      { sno: 22, time: '11:30 AM', old: '61', new: '72' },
-      { sno: 23, time: '12:00 PM', old: '08', new: '34' },
-      { sno: 24, time: '12:30 PM', old: '36', new: '21' },
-      { sno: 25, time: '01:00 PM', old: '64', new: '72' },
-      { sno: 26, time: '01:30 PM', old: '35', new: '22' },
-      { sno: 27, time: '02:00 PM', old: '13', new: '35' },
-      { sno: 28, time: '02:30 PM', old: '37', new: '20' },
-      { sno: 29, time: '03:00 PM', old: '40', new: '91' },
-      { sno: 30, time: '03:30 PM', old: '51', new: '39' },
-      { sno: 31, time: '04:00 PM', old: '47', new: '55' },
-      { sno: 32, time: '04:30 PM', old: '89', new: '20' },
-      { sno: 33, time: '05:00 PM', old: '28', new: '09' },
-      { sno: 34, time: '05:30 PM', old: '81', new: '05' },
-      { sno: 35, time: '06:00 PM', old: '74', new: '08' },
-      { sno: 36, time: '06:30 PM', old: '35', new: '22' },
-      { sno: 37, time: '07:00 PM', old: '49', new: '35' },
-      { sno: 38, time: '07:30 PM', old: '59', new: '22' },
-      { sno: 39, time: '08:00 PM', old: '44', new: '18' },
-      { sno: 40, time: '08:30 PM', old: '76', new: '54' },
-      { sno: 41, time: '09:00 PM', old: '96', new: '14' },
-      { sno: 42, time: '09:30 PM', old: '16', new: 'wait..' },
-      { sno: 43, time: '10:00 PM', old: '32', new: 'wait..' },
-      { sno: 44, time: '10:30 PM', old: '23', new: 'wait..' },
-      { sno: 45, time: '11:00 PM', old: '37', new: 'wait..' }
-    ];
+    function mapApiRow(r) {
+      return {
+        sno: r.sno,
+        time: r.time,
+        old: r.oldResult || '---',
+        new: r.newResult || 'wait..'
+      };
+    }
 
-    const chartRows = [
-      ['01-05-2026', '96', '78', '86', '34', '97', '96', '72', '91', '70', '38', '96', '10', '30', '84', '62', '76', '06', '99', '03', '32', '78', '70', '01', '26', '88', '18', '76', '62', '35', '04', '21', '63'],
-      ['02-05-2026', '67', '18', '72', '98', '57', '50', '30', '34', '90', '18', '08', '06', '90', '96', '40', '38', '32', '88', '15', '25', '10', '02', '40', '76', '76', '52', '09', '70', '12', '63', '77', '80'],
-      ['03-05-2026', '52', '38', '89', '13', '17', '06', '03', '41', '10', '83', '11', '88', '63', '42', '93', '64', '89', '82', '08', '50', '41', '43', '62', '60', '37', '03', '88', '37', '56', '86', '83'],
-      ['04-05-2026', '59', '80', '87', '40', '01', '09', '49', '79', '58', '38', '68', '27', '01', '85', '01', '34', '58', '34', '47', '64', '23', '47', '39', '49', '53', '73', '98', '63', '61', '54', '78', '71'],
-      ['05-05-2026', '29', '01', '48', '81', '75', '27', '74', '78', '11', '21', '05', '01', '63', '09', '13', '07', '10', '87', '15', '71', '34', '06', '97', '60', '99', '03', '66', '89', '44', '84', '75', '70'],
-      ['06-05-2026', '63', '53', '47', '11', '81', '34', '34', '68', '09', '08', '80', '43', '17', '59', '45', '22', '92', '36', '38', '15', '03', '10', '64', '19', '45', '27', '00', '29', '69', '71', '52', '74'],
-      ['07-05-2026', '53', '15', '84', '23', '96', '57', '96', '02', '19', '38', '25', '11', '81', '00', '49', '97', '64', '87', '85', '69', '85', '66', '70', '90', '08', '02', '85', '67', '50', '91', '96', '60']
-    ];
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const suffix = hours >= 12 ? 'PM' : 'AM';
+      hours = ((hours + 11) % 12) + 1;
+      document.getElementById('liveTime').textContent =
+        `${hours.toString().padStart(2, '0')}:${minutes} ${suffix}`;
+    }
+
+    async function loadYearOptions() {
+      const select = document.getElementById('yearSelect');
+      try {
+        const res = await fetch('/api/chart/years');
+        if (!res.ok) throw new Error('years unavailable');
+        const years = await res.json();
+        select.innerHTML = years.map(y => `<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`).join('');
+      } catch (e) {
+        const y = new Date().getFullYear();
+        select.innerHTML = `<option value="${y}">${y}</option>`;
+      }
+    }
 
     async function renderResults() {
+      const tbody = document.getElementById('resultsBody');
       try {
         const response = await fetch('/api/results');
         if (!response.ok) throw new Error('API not available');
         const dbRows = await response.json();
 
-        // Merge dbRows with mockRows based on time
-        const mergedRows = mockRows.map(mock => {
-          const dbRow = dbRows.find(r => r.time === mock.time);
-          if (dbRow) {
-            return {
-              sno: dbRow.sno || mock.sno,
-              time: mock.time,
-              old: dbRow.oldResult || '---',
-              new: dbRow.newResult || 'wait..'
-            };
-          }
-          return mock;
-        });
-
-        // Add any dbRows that were not in mockRows
-        dbRows.forEach(dbRow => {
-          if (!mergedRows.find(m => m.time === dbRow.time)) {
-            mergedRows.push({
-              sno: dbRow.sno,
-              time: dbRow.time,
-              old: dbRow.oldResult || '---',
-              new: dbRow.newResult || 'wait..'
-            });
-          }
-        });
-
-        // Sort by sno
-        mergedRows.sort((a, b) => a.sno - b.sno);
-
-        const body = mergedRows.map(r => `
-          <tr>
-            <td>${r.sno}</td>
-            <td>MAHADEV LOTTERY</td>
-            <td>${r.time}</td>
-            <td>${r.old}</td>
-            <td style="${r.new.toLowerCase() !== 'wait..' ? 'color: #ffeb3b; font-weight: bold;' : ''}">${r.new}</td>
-          </tr>
-        `).join('');
-        document.getElementById('resultsBody').innerHTML = body;
-
-        // Update latest result in hero-box (Pot)
-        // Find the last row that has a result (not wait..)
-        const latestRow = [...mergedRows].reverse().find(r => r.new && r.new.toLowerCase() !== 'wait..');
-
-        // If there's a latest result, show it. Otherwise show the first slot.
-        const displayRow = latestRow || mergedRows[0];
-        if (displayRow) {
-          document.getElementById('liveResult').textContent = displayRow.new || 'wait..';
-          document.getElementById('liveTime').textContent = displayRow.time || '';
+        if (!dbRows.length) {
+          tbody.innerHTML = '<tr><td colspan="5">No results available</td></tr>';
+          document.getElementById('liveResult').textContent = 'wait..';
+          return;
         }
 
-      } catch (error) {
-        console.error('Failed to fetch results:', error);
+        const rows = dbRows.map(mapApiRow).sort((a, b) => a.sno - b.sno);
 
-        // Fallback to mockRows if API fails
-        const body = mockRows.map(r => `
+        tbody.innerHTML = rows.map(r => `
           <tr>
-            <td>${r.sno}</td>
+            <td>${escapeHtml(r.sno)}</td>
             <td>MAHADEV LOTTERY</td>
-            <td>${r.time}</td>
-            <td>${r.old}</td>
-            <td>${r.new}</td>
+            <td>${escapeHtml(r.time)}</td>
+            <td>${escapeHtml(r.old)}</td>
+            <td style="${r.new.toLowerCase() !== 'wait..' ? 'color: #ffeb3b; font-weight: bold;' : ''}">${escapeHtml(r.new)}</td>
           </tr>
         `).join('');
-        document.getElementById('resultsBody').innerHTML = body;
+
+        const latestRow = [...rows].reverse().find(r => r.new && r.new.toLowerCase() !== 'wait..');
+        const displayRow = latestRow || rows[rows.length - 1];
+        if (displayRow) {
+          document.getElementById('liveResult').textContent = displayRow.new || 'wait..';
+        }
+      } catch (error) {
+        console.error('Failed to fetch results:', error);
+        tbody.innerHTML = '<tr><td colspan="5">Unable to load results</td></tr>';
+        document.getElementById('liveResult').textContent = 'wait..';
       }
     }
 
-    function renderChart() {
+    async function renderChart() {
       const chartWrap = document.getElementById('chartWrap');
-      const headers = ['DATE', '01 AM', '01:30 AM', '02 AM', '02:30 AM', '03 AM', '03:30 AM', '04 AM', '04:30 AM', '05 AM', '05:30 AM', '06 AM', '06:30 AM', '07 AM', '07:30 AM', '08 AM', '08:30 AM', '09 AM', '09:30 AM', '10 AM', '10:30 AM', '11 AM', '11:30 AM', '12 PM', '12:30 PM', '01 PM', '01:30 PM', '02 PM', '02:30 PM', '03 PM', '03:30 PM', '04 PM', '04:30 PM'];
-      let html = '<table class="chart-table"><thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-      chartRows.forEach(row => {
-        html += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
-      });
-      html += '</tbody></table>';
-      chartWrap.innerHTML = html;
+      const year = document.getElementById('yearSelect').value;
+      chartWrap.innerHTML = '<p style="color:#fff;text-align:center;padding:16px;">Loading chart…</p>';
+
+      try {
+        const res = await fetch(`/api/chart?year=${encodeURIComponent(year)}`);
+        if (!res.ok) throw new Error('Chart API not available');
+        const { headers, rows } = await res.json();
+
+        if (!rows || !rows.length) {
+          chartWrap.innerHTML = '<p style="color:#fff;text-align:center;padding:16px;">No chart data for this year</p>';
+          return;
+        }
+
+        let html = '<table class="chart-table"><thead><tr>'
+          + headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')
+          + '</tr></thead><tbody>';
+        rows.forEach(row => {
+          html += '<tr>' + row.map(cell => `<td>${escapeHtml(cell)}</td>`).join('') + '</tr>';
+        });
+        html += '</tbody></table>';
+        chartWrap.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        chartWrap.innerHTML = '<p style="color:#fff;text-align:center;padding:16px;">Unable to load chart</p>';
+      }
     }
 
     document.getElementById('chartGo').addEventListener('click', renderChart);
 
-    // Call renderResults and then fetch fresh data periodically
-    renderResults();
-    setInterval(renderResults, 30000); // refresh every 30 seconds
-    renderChart();
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+
+    (async () => {
+      await loadYearOptions();
+      await renderResults();
+      await renderChart();
+      setInterval(renderResults, 30000);
+    })();
   </script>
 </body>
 

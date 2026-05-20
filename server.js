@@ -4,6 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
+const {
+  CHART_SLOTS,
+  CHART_HEADERS,
+  normalizeTime,
+  formatChartDate,
+  formatResultValue
+} = require('./lib/timeSlots');
 
 const app = express();
 app.use(cors());
@@ -104,6 +111,59 @@ function registerRoutes(Result) {
     } catch (error) {
       console.error('GET /api/results error:', error.message);
       res.status(500).json({ error: 'Unable to load results' });
+    }
+  });
+
+  // GET years that have chart data
+  app.get('/api/chart/years', async (req, res) => {
+    try {
+      const dates = await Result.distinct('date');
+      const years = [...new Set(
+        dates
+          .map(d => (d || '').split('-')[0])
+          .filter(y => /^\d{4}$/.test(y))
+      )].sort((a, b) => Number(b) - Number(a));
+
+      const istYear = new Date(Date.now() + 330 * 60000).toISOString().split('T')[0].split('-')[0];
+      if (!years.includes(istYear)) years.unshift(istYear);
+
+      res.json(years);
+    } catch (error) {
+      console.error('GET /api/chart/years error:', error.message);
+      res.status(500).json({ error: 'Unable to load chart years' });
+    }
+  });
+
+  // GET chart rows for a year (public)
+  app.get('/api/chart', async (req, res) => {
+    try {
+      const year = String(req.query.year || new Date().getFullYear()).trim();
+      if (!/^\d{4}$/.test(year)) {
+        return res.status(400).json({ error: 'Invalid year' });
+      }
+
+      const dbRows = await Result.find({ date: { $regex: `^${year}-` } }).sort({ date: 1, sno: 1 });
+      const byDate = {};
+
+      dbRows.forEach(row => {
+        if (!byDate[row.date]) byDate[row.date] = {};
+        byDate[row.date][normalizeTime(row.time)] = formatResultValue(row.newResult);
+      });
+
+      const chartRows = Object.keys(byDate)
+        .sort()
+        .map(date => {
+          const slotMap = byDate[date];
+          return [
+            formatChartDate(date),
+            ...CHART_SLOTS.map(slot => slotMap[slot.time] || '—')
+          ];
+        });
+
+      res.json({ headers: CHART_HEADERS, rows: chartRows });
+    } catch (error) {
+      console.error('GET /api/chart error:', error.message);
+      res.status(500).json({ error: 'Unable to load chart' });
     }
   });
 
